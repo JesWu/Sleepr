@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import java.io.File
+import java.io.FileInputStream
 
 class DisplayMessageActivity : AppCompatActivity() {
 
@@ -17,6 +19,11 @@ class DisplayMessageActivity : AppCompatActivity() {
         // Capture the layout's TextView and set the string as its text
         val textView = findViewById<TextView>(R.id.textView).apply {
             text = message
+        }
+
+        val textView3 = findViewById<TextView>(R.id.textView3).apply {
+            var file = File("" + getFilesDir() + "/Logs/Log.txt")
+            text = FileInputStream(file).bufferedReader().use { file.readText() }
         }
     }
 }

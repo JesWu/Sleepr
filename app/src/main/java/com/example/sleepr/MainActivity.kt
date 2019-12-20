@@ -7,14 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 import java.util.Date
 
 const val EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"
+var TIME_START = ""
+var TIME_END = ""
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,11 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -55,9 +55,35 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun showGraph(view: View) {
+        val intent = Intent(this, GraphActivity::class.java).apply{
+        }
+        startActivity(intent)
+    }
+
     fun displayDate(view: View){
-        val textView = findViewById<TextView>(R.id.textView2).apply {
-            text = Date().toString()
+        val toggle = findViewById<Button>(R.id.button2)
+        val textView = findViewById<TextView>(R.id.textView2)
+
+        val path = this.getFilesDir()
+        val LogDir = File(path, "Logs")
+        LogDir.mkdirs()
+        val file = File(LogDir, "Log.txt")
+
+        if(TIME_START == ""){
+            TIME_START = Date().toString()
+            textView.text = TIME_START
+            toggle.text = "End date"
+        }else if(TIME_END == ""){
+            TIME_END = Date().toString()
+            file.appendText("(${TIME_START}) (${TIME_END})\n")
+            textView.text = TIME_START + "\n" + TIME_END
+            toggle.text = "Clear date"
+        }else{
+            TIME_START = ""
+            TIME_END = ""
+            textView.text = ""
+            toggle.text = "Start date"
         }
     }
 }
