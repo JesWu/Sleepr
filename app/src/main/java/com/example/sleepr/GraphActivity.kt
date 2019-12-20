@@ -9,6 +9,8 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import java.io.File
+import java.lang.Integer.parseInt
 
 class GraphActivity : AppCompatActivity() {
 
@@ -24,19 +26,48 @@ class GraphActivity : AppCompatActivity() {
         sleepChart.setDragEnabled(true)
         sleepChart.setScaleEnabled(true)
 
-        val point1 = Entry(0f, 50f)  // on point/index 0, the data is 50
-        val point2 = Entry(1f, 100f) // on point/index 1, the data is 100
-        val point3 = Entry(2f, 75f)  // on point/index 2, the data is 75
 
-        val EntryArray = arrayListOf<Entry>(point1, point2, point3)
+        var file = File("" + getFilesDir() + "/Logs/Log.txt")
+        var EntryArray = ArrayList<Entry>()
+        file.forEachLine{
 
-        val lineDataSet = LineDataSet(EntryArray, "Sleep")
+            var line = it.split(" ")
+            var dateStart = line[2]
+            var dateEnd = line[8]
+            var timeStart = line[3].split(':')
+            var timeEnd = line[9].split(':')
+            var timeDiff = null
+
+            //if the two days are the same
+            if(dateStart == dateEnd){
+                var hours = 0f
+                hours += (parseInt(timeEnd[2]) - parseInt(timeStart[2]))
+                /*
+                hours += (parseInt(timeEnd[1]) - parseInt(timeStart[1])) / 60
+                hours += (parseInt(timeEnd[2]) - parseInt(timeStart[2])) / (60 * 60)
+                 */
+                println("${timeEnd[2]} ${timeStart[2]} ${hours}")
+                var entry = Entry(dateStart.toFloat(), hours)
+                EntryArray.add(entry)
+            }
+        }
+
+        /*
+        var entry1 = Entry(0f, 0f)
+        var entry2 = Entry(10f, 30f)
+        var entry3 = Entry(20f, 20f)
+        EntryArray = arrayListOf(entry1, entry2, entry3)
+        */
+
+        val lineDataSet = LineDataSet(EntryArray, "Hours")
         lineDataSet.color = Color.BLUE
         lineDataSet.setDrawValues(false)
-        lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT)
+        lineDataSet.axisDependency = YAxis.AxisDependency.LEFT
 
         var lineData = LineData(lineDataSet)
 
-        sleepChart.setData(lineData)
+        sleepChart.data = lineData
+        sleepChart.description.isEnabled = false
     }
+
 }

@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        val path = this.getFilesDir()
+        val LogDir = File(path, "Logs")
+        LogDir.mkdirs()
+        val file = File(LogDir, "Log.txt")
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -76,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             toggle.text = "End date"
         }else if(TIME_END == ""){
             TIME_END = Date().toString()
-            file.appendText("(${TIME_START}) (${TIME_END})\n")
+            file.appendText("${TIME_START} ${TIME_END}\n")
             textView.text = TIME_START + "\n" + TIME_END
             toggle.text = "Clear date"
         }else{
@@ -85,5 +91,13 @@ class MainActivity : AppCompatActivity() {
             textView.text = ""
             toggle.text = "Start date"
         }
+    }
+
+    fun clearLog(view: View){
+        val path = this.getFilesDir()
+        val LogDir = File(path, "Logs")
+        LogDir.mkdirs()
+        val file = File(LogDir, "Log.txt")
+        file.writeText("")
     }
 }
